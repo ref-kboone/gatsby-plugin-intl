@@ -84,12 +84,13 @@ exports.onCreatePage = async ({ page, actions }, pluginOptions) => {
     var slugs = {}
     languages.forEach(language => {
       var messages = getMessages(path, language)
-      slugs[language] =
+      slugs[language] = normalize(
         "/" +
-        page.path
-          .split("/")
-          .map(slug => messages[`${slug}.slug`] || slug)
-          .join("/")
+          page.path
+            .split("/")
+            .map(slug => messages[`${slug}.slug`] || slug)
+            .join("/")
+      )
     })
     return slugs
   }
