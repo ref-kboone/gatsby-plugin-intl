@@ -1,5 +1,15 @@
 const webpack = require("webpack")
 
+function normalize(url) {
+  const set = url.match(/([^:]\/{2,3})/g) // Match (NOT ":") followed by (2 OR 3 "/")
+
+  for (const str in set) {
+    const replace_with = set[str].substr(0, 1) + "/"
+    url = url.replace(set[str], replace_with)
+  }
+  return url
+}
+
 function flattenMessages(nestedMessages, prefix = "") {
   return Object.keys(nestedMessages).reduce((messages, key) => {
     let value = nestedMessages[key]
@@ -87,9 +97,9 @@ exports.onCreatePage = async ({ page, actions }, pluginOptions) => {
   const generatePage = (routed, language) => {
     const messages = getMessages(path, language)
     const slugs = getSlugs(path)
-    var newPath = routed
-      ? `/${language}${slugs[language]}`
-      : `${slugs[language]}`
+    var newPath = normalize(
+      routed ? `/${language}${slugs[language]}` : `${slugs[language]}`
+    )
     return {
       ...page,
       path: newPath,
