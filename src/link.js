@@ -4,15 +4,11 @@ import { Link as GatsbyLink, navigate as gatsbyNavigate } from "gatsby"
 import { IntlContextConsumer } from "./intl-context"
 
 const getLink = (language, to, routed, messages) => {
-  const currentPage = to.replace(/\//g, "")
-  const slugTo = messages[`${currentPage}.slug`]
-    ? messages[`${currentPage}.slug`]
-    : to
-  const link = normalize(
-    routed || language ? `/${language}/${slugTo}` : `${slugTo}`
-  )
-
-  return link
+  const slugTo = to
+    .split("/")
+    .map(slug => messages[`${slug}.slug`] || slug)
+    .join("/")
+  return normalize(routed || language ? `/${language}/${slugTo}` : `${slugTo}`)
 }
 
 const Link = ({ to, language, children, onClick, ...rest }) => (

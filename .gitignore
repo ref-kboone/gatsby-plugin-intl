@@ -70,3 +70,5 @@ yarn-error.log
 
 # plugin build
 /*.js
+
+package-lock.json
