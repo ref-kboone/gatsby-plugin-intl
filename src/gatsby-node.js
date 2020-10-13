@@ -115,7 +115,9 @@ exports.onCreatePage = async ({ page, actions }, pluginOptions) => {
     }
   }
 
+  const newPage = generatePage(false, defaultLanguage)
   deletePage(page)
+  createPage(newPage)
 
   if (page.language) {
     languages = [page.language]
