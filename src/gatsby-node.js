@@ -75,6 +75,9 @@ exports.onCreatePage = async ({ page, actions }, pluginOptions) => {
 
   // Return all languages slug for this page
   const getSlugs = path => {
+    if (page.context.slugs) {
+      return page.context.slugs
+    }
     var slugs = {}
     languages.forEach(language => {
       var messages = getMessages(path, language)
