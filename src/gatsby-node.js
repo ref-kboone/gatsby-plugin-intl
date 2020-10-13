@@ -119,8 +119,8 @@ exports.onCreatePage = async ({ page, actions }, pluginOptions) => {
   deletePage(page)
   createPage(newPage)
 
-  if (page.language) {
-    languages = [page.language]
+  if (page.context.language) {
+    languages = [page.context.language]
   }
 
   languages.forEach(language => {
