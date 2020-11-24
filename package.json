@@ -1,7 +1,7 @@
 {
   "name": "@the-reference/gatsby-plugin-intl",
   "description": "Gatsby plugin to add react-intl onto a site",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "author": "Hannes Vermeire <hvermeire@reference.be>",
   "contributors": [
     "Ken Boone <kboone@reference.be>",
