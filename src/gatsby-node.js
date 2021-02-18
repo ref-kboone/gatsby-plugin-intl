@@ -94,7 +94,7 @@ exports.onCreatePage = async ({ page, actions }, pluginOptions) => {
 
   const generatePage = (routed, language) => {
     const messages = getMessages(path, language)
-    const slugs = getSlugs(path)
+    let slugs = getSlugs(path)
     if (!routed && slugs[language].startsWith(`/${language}/`)) {
       return
     }
