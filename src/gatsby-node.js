@@ -24,7 +24,7 @@ exports.onCreateWebpackConfig = ({ actions, plugins }, pluginOptions) => {
   if (!languages.includes(defaultLanguage)) {
     languages.push(defaultLanguage)
   }
-  const regex = new RegExp(languages.map((l) => l.split("-")[0]).join("|"))
+  const regex = new RegExp(languages.map(l => l.split("-")[0]).join("|"))
   actions.setWebpackConfig({
     plugins: [
       plugins.define({
@@ -74,18 +74,18 @@ exports.onCreatePage = async ({ page, actions }, pluginOptions) => {
   }
 
   // Return all languages slug for this page
-  const getSlugs = (path) => {
+  const getSlugs = path => {
     if (page.context.slugs) {
       return page.context.slugs
     }
     var slugs = {}
-    languages.forEach((language) => {
+    languages.forEach(language => {
       var messages = getMessages(path, language)
       slugs[language] = normalize(
         "/" +
           page.path
             .split("/")
-            .map((slug) => messages[`${slug}.slug`] || slug)
+            .map(slug => messages[`${slug}.slug`] || slug)
             .join("/")
       )
     })
@@ -98,9 +98,15 @@ exports.onCreatePage = async ({ page, actions }, pluginOptions) => {
     if (!routed && slugs[language].startsWith(`/${language}/`)) {
       return
     }
-    var newPath = normalize(
-      routed ? `/${language}${slugs[language]}` : `${slugs[language]}`
-    )
+    let newPath
+    if (page.path.match(/^\/?(nl|fr)(\/|$)/)) {
+      newPath = page.path
+      slugs = null
+    } else {
+      newPath = normalize(
+        routed ? `/${language}${slugs[language]}` : `${slugs[language]}`
+      )
+    }
     return {
       ...page,
       path: newPath,
@@ -122,11 +128,16 @@ exports.onCreatePage = async ({ page, actions }, pluginOptions) => {
   }
 
   const newPage = generatePage(false, defaultLanguage)
-  deletePage(page)
-  createPage(newPage)
+  if (newPage) {
+    deletePage(page)
+    createPage(newPage)
+  }
 
   if (page.context.language) {
     const localePage = generatePage(true, page.context.language)
+    if (!localePage) {
+      return
+    }
     const regexp = new RegExp("/404/?$")
     if (regexp.test(localePage.path)) {
       localePage.matchPath = `/${page.context.language}/*`
@@ -135,8 +146,11 @@ exports.onCreatePage = async ({ page, actions }, pluginOptions) => {
     return
   }
 
-  languages.forEach((language) => {
+  languages.forEach(language => {
     const localePage = generatePage(true, language)
+    if (!localePage) {
+      return
+    }
     const regexp = new RegExp("/404/?$")
     if (regexp.test(localePage.path)) {
       localePage.matchPath = `/${language}/*`
